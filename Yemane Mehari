@@ -1,0 +1,74 @@
+import React, { useState, useEffect } from 'react';
+
+const MockAPI = {
+  checkNameAvailability: async (name) => {
+    // Simulating API call for name validation
+    return !name.includes('mock'); // Replace with actual validation logic
+  },
+  fetchLocations: async () => {
+    // Simulating API call for fetching locations
+    return ['Canada', 'USA', 'Brazil']; // Replace with actual API response
+  },
+};
+
+const NameLocationForm = () => {
+  const [name, setName] = useState('');
+  const [isNameTaken, setIsNameTaken] = useState(false);
+  const [locations, setLocations] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
+
+  useEffect(() => {
+    // Fetch locations on component mount
+    MockAPI.fetchLocations().then((response) => setLocations(response));
+  }, []);
+
+  const handleNameChange = (event) => {
+    const newName = event.target.value;
+    setName(newName);
+
+    // Validate name using the mock API
+    MockAPI.checkNameAvailability(newName).then((isTaken) => setIsNameTaken(isTaken));
+  };
+
+  const handleLocationChange = (event) => {
+    setSelectedLocation(event.target.value);
+  };
+
+  const handleClear = () => {
+    setName('');
+    setSelectedLocation('');
+  };
+
+  const handleAdd = () => {
+    // Add your logic to handle the "Add" button click
+    // This could involve sending data to a server or updating state in your application
+    console.log('Name:', name);
+    console.log('Location:', selectedLocation);
+  };
+
+  return (
+    <div>
+      <label htmlFor="name">Nome</label>
+      <input
+        type="text"
+        id="name"
+        value={name}
+        onChange={handleNameChange}
+      />
+      {isNameTaken && <p>This name has already been taken</p>}
+
+      <label htmlFor="location">Location</label>
+      <select id="location" value={selectedLocation} onChange={handleLocationChange}>
+        <option value="">Select Location</option>
+        {locations.map((location) => (
+          <option key={location} value={location}>
+            {location}
+          </option>
+        ))}
+      </select>
+
+      <button onClick={handleClear}>Clear</button>
+      <button onClick={handleAdd}>Add</button>
+    </div>
+  );
+};
